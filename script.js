@@ -23,11 +23,11 @@ const pick=(k,n)=>CATS.slice(0,8).map((c,i)=>{const l=P.filter(p=>p.c===c[0]);re
 function home(){return `
 <section class="hero"><div class="wrap"><h1>Materiais de construção e ferragens para todas as obras</h1>
 <p>Procure entre mais de ${Math.floor(P.length/100)*100} artigos e peça orçamento. Atendimento em loja em Pousada de Saramagos.</p>
-<form class="search" id="hs"><input type="search" id="hq" placeholder="Pesquisar por nome ou referência, ex.: broca, fechadura, tinta" aria-label="Pesquisar produtos"><button>Pesquisar</button></form>
+<form class="search" id="hs"><input type="search" id="hq" placeholder="Pesquisar produto ou referência" aria-label="Pesquisar produtos"><button>Pesquisar</button></form>
 <div class="chips">${CATS.slice(0,8).map(c=>`<a href="#/catalogo?c=${c[0]}">${c[1]}</a>`).join('')}</div></div></section>
 <div class="facts"><div class="wrap"><div><b>${Math.floor(P.length/100)*100}+</b><span>artigos no catálogo</span></div><div><b>${CATS.length}</b><span>categorias de produto</span></div><div><b>Orçamentos</b><span>pedidos online, resposta por email ou telefone</span></div><div><b>Pousada de Saramagos</b><span>Av. Riopele, 28</span></div></div></div>
 <section class="wrap"><div class="sec-head"><h2>Categorias principais</h2><a href="#/catalogo">Ver todo o catálogo</a></div><div class="grid cats">${CATS.map(c=>`<a href="#/catalogo?c=${c[0]}">${c[1]}<small>${P.filter(p=>p.c===c[0]).length} artigos</small></a>`).join('')}</div></section>
-<section class="wrap" style="padding-top:0"><h2>Produtos em destaque</h2><div class="grid">${pick(.3,8).map(card).join('')}</div></section>
+<section class="wrap nopad"><h2>Produtos em destaque</h2><div class="grid">${pick(.3,8).map(card).join('')}</div></section>
 <section class="band"><div class="wrap"><h2>Novidades e coleções</h2><div class="grid">${pick(.7,8).map(card).join('')}</div></div></section>
 <section class="wrap two"><div><h2>Bem-vindo aos Armazéns Santo António</h2>
 <p>A Abílio da Costa Araújo & Filhos, Lda é uma loja de materiais de construção e diversos, com soluções para obras novas, remodelações e pequenas reparações.</p><p><a class="btn" href="#/sobre">Conheça a loja</a></p></div>
