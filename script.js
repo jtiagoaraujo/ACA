@@ -47,11 +47,12 @@ function catalog(qs){
  const u=new URLSearchParams(qs);if(u.has('c')){F.c=u.get('c');F.pg=0}if(u.has('q')){F.q=u.get('q');F.pg=0}
  app.innerHTML=`<section class="wrap"><h1 style="margin-bottom:20px">Catálogo de produtos</h1><div class="shop"><aside class="side"><h3>Categorias</h3>
  <a href="#/catalogo?c=" class="${F.c?'':'on'}">Todas <em>${P.length}</em></a>${CATS.map(c=>`<a href="#/catalogo?c=${c[0]}" class="${F.c===c[0]?'on':''}">${c[1]} <em>${P.filter(p=>p.c===c[0]).length}</em></a>`).join('')}</aside>
- <div><div class="tools"><input type="search" id="q" placeholder="Pesquisar por nome ou referência…" value="${esc(F.q)}" aria-label="Pesquisar">
+ <div><div class="tools"><select id="cs" class="mob" aria-label="Categoria"><option value="">Todas as categorias</option>${CATS.map(c=>`<option value="${c[0]}" ${F.c===c[0]?'selected':''}>${c[1]}</option>`).join('')}</select><input type="search" id="q" placeholder="Pesquisar por nome ou referência…" value="${esc(F.q)}" aria-label="Pesquisar">
  <select id="o" aria-label="Ordenar"><option value="n">Nome A–Z</option><option value="z">Nome Z–A</option><option value="r">Referência</option></select></div>
  <p id="cnt" class="note" style="margin:0 0 16px"></p><div class="grid" id="res"></div><div class="pager" id="pg"></div></div></div></section>`;
  $('#o').value=F.o;
  ['q','o'].forEach(k=>$('#'+k).addEventListener('input',e=>{F[k]=e.target.value;F.pg=0;list()}));
+ $('#cs').onchange=e=>{location.hash='#/catalogo?c='+e.target.value};
  list()}
 
 function product(id){
@@ -97,6 +98,6 @@ function route(){
  if(r==='faq')app.innerHTML=faq();
  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.r===(r==='produto'?'catalogo':r)));
  $('#nav').classList.remove('open');scrollTo(0,0)}
-$('#burger').onclick=()=>$('#nav').classList.toggle('open');
+$('#burger').onclick=()=>{const o=$('#nav').classList.toggle('open');$('#burger').setAttribute('aria-expanded',o)};
 $('#y').textContent=new Date().getFullYear();
 addEventListener('hashchange',route);route();
