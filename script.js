@@ -68,7 +68,7 @@ function product(id){
 
 const about=()=>`<section class="wrap"><h2>Sobre nós</h2><div class="two"><div>
 <h3>A nossa história</h3><p>A Abílio da Costa Araújo & Filhos, Lda é uma empresa familiar sediada em Pousada de Saramagos, com loja de materiais de construção e diversos.</p>
-<p><i>[Edite aqui: ano de fundação, fundadores e marcos importantes.]</i></p>
+<p><i>Desde 1952.</i></p>
 <h3 style="margin-top:20px">Missão</h3><p>Fornecer materiais de qualidade, com aconselhamento próximo, para que cada obra corra bem.</p></div>
 <img class="about-logo" src="logo.png" alt="Emblema Armazéns Santo António"></div></section>
 <section class="band"><div class="wrap"><h2>Valores</h2><div class="values">
@@ -76,7 +76,7 @@ const about=()=>`<section class="wrap"><h2>Sobre nós</h2><div class="two"><div>
 <div><h3>Qualidade</h3><p>Materiais selecionados para durar.</p></div>
 <div><h3>Serviço</h3><p>Aconselhamento para cada projeto.</p></div>
 <div><h3>Tradição familiar</h3><p>Uma empresa de família ao serviço da região.</p></div></div></div></section>
-<section class="wrap"><h2>A nossa loja</h2><div class="grid">${[1,2,3].map(()=>'<div class="ph"><span></span></div>').join('')}</div><p class="note">Substitua estes espaços por fotografias reais da loja.</p></section>`;
+<section class="wrap"><h2>A nossa loja</h2><div class="grid">${[1,2,3].map(()=>'<div class="ph"><span></span></div>').join('')}</div></section>`;
 
 const contacts=(ref)=>`<section class="wrap"><h2>Contactos</h2><div class="two" style="align-items:start"><div>
 <div class="box"><p><b>Morada</b><br>${CONTACT.morada}</p><p style="margin-top:12px"><b>Telefone</b><br><a href="tel:+351252990480">${CONTACT.tel}</a></p>
