@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-PT"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Backoffice – Armazéns Santo António</title>
+<style>
+*{box-sizing:border-box;margin:0}body{font:16px/1.5 system-ui,sans-serif;background:#f5f7fa;color:#14213d}
+header{background:#05255c;color:#fff;padding:14px 20px;display:flex;gap:12px;align-items:center}header img{width:40px;background:#fff;border-radius:50%}header button{margin-left:auto}
+main{max-width:980px;margin:20px auto;padding:0 16px}nav{display:flex;gap:6px;margin-bottom:16px}nav button{padding:10px 18px;border:1px solid #dbe2ec;background:#fff;border-radius:6px;font:inherit;cursor:pointer}nav button.on{background:#05255c;color:#fff}
+.box{background:#fff;border:1px solid #dbe2ec;border-radius:8px;padding:20px;margin-bottom:16px}h2{font-size:1.2rem;margin-bottom:12px;color:#05255c}
+label{display:block;font-size:.85rem;font-weight:600;margin:10px 0 3px}input,select,textarea{width:100%;padding:9px 11px;border:1px solid #c5cedc;border-radius:5px;font:inherit}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.chk{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px}.chk label{display:flex;gap:6px;align-items:center;font-weight:500;margin:0}.chk input{width:auto}
+button.b{background:#05255c;color:#fff;border:0;padding:10px 20px;border-radius:5px;font:inherit;cursor:pointer;margin:14px 8px 0 0}button.b.s{background:#e8edf5;color:#05255c}button.b.r{background:#b3261e}header button.b{margin:0}
+table{width:100%;border-collapse:collapse}td,th{padding:8px 6px;border-bottom:1px solid #e3e8f0;text-align:left;font-size:.9rem;vertical-align:middle}td img{width:56px;height:42px;object-fit:cover;border-radius:4px;background:#eef2f8}td .b{margin:2px 4px 2px 0;padding:6px 12px}
+.note{font-size:.85rem;color:#5a6782;margin-top:8px}.hid{display:none}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#14213d;color:#fff;padding:10px 20px;border-radius:6px;display:none;z-index:9}#toast.err{background:#b3261e}
+#login{max-width:380px;margin:60px auto}
+</style></head><body>
+<header><img src="logo.png" alt=""><b>Backoffice · Armazéns Santo António</b><button class="b s hid" id="out">Sair</button></header>
+<main>
+<div id="setup" class="box hid"><h2>Configuração em falta</h2><p>Preencha o <code>config.js</code> com o endereço e a chave do seu projeto Supabase.</p></div>
+<div id="login" class="box hid"><h2>Entrar</h2><label>Email</label><input id="em" type="email" autocomplete="username"><label>Palavra-passe</label><input id="pw" type="password" autocomplete="current-password"><button class="b" id="go">Entrar</button><p class="note err" id="lmsg"></p></div>
+
+<div id="app" class="hid">
+<nav id="tabs"><button data-t="p" class="on">Produtos</button><button data-t="b">Promoções e banners</button></nav>
+<section id="p">
+ <div class="box"><h2 id="ptitle">Novo produto</h2>
+  <div class="row"><div><label>Referência *</label><input id="ref"></div><div><label>Nome *</label><input id="nome"></div><div><label>Categoria *</label><select id="cat"></select></div></div>
+  <div class="row"><div><label>Preço (€) – vazio = sob consulta</label><input id="preco" inputmode="decimal"></div><div><label>Preço antigo (€, riscado)</label><input id="ant" inputmode="decimal"></div><div><label>Imagem</label><input id="img" type="file" accept="image/*"></div></div>
+  <label>Descrição</label><textarea id="desc" rows="3"></textarea>
+  <div class="chk"><label><input type="checkbox" id="dest"> Destaque (Início)</label><label><input type="checkbox" id="novo"> Novidade (Início)</label><label><input type="checkbox" id="promo"> Em promoção</label></div>
+  <button class="b" id="psave">Guardar produto</button><button class="b s" id="pcancel">Limpar</button></div>
+ <div class="box"><h2>Produtos adicionados (<span id="pcount">0</span>)</h2><table id="plist"></table></div>
+ <div class="box"><h2>Editar um produto do inventário</h2><input id="isearch" placeholder="Pesquisar por nome ou referência…"><table id="ilist"></table>
+  <p class="note">Pode alterar preço, imagem, descrição, nome, categoria ou marcar como promoção. O inventário original mantém-se e pode ser reposto.</p></div>
+ <div class="box"><h2>Produtos do inventário alterados (<span id="acount">0</span>)</h2><table id="alist"></table></div>
+</section>
+<section id="b" class="hid">
+ <div class="box"><h2>Aba de promoções</h2><div class="chk"><label><input type="checkbox" id="aativa"> Mostrar a aba no menu do site</label></div>
+  <div class="row"><div><label>Nome da aba</label><input id="atit"></div></div><label>Texto de introdução</label><textarea id="aint" rows="2"></textarea><button class="b" id="asave">Guardar aba</button></div>
+ <div class="box"><h2 id="btitle">Novo banner</h2>
+  <div class="row"><div><label>Imagem * (recomendado 1600×500)</label><input id="bimg" type="file" accept="image/*"></div><div><label>Título</label><input id="btit"></div></div>
+  <div class="row"><div><label>Texto</label><input id="btxt"></div><div><label>Link (opcional)</label><input id="blink" placeholder="#/promocoes ou https://…"></div></div>
+  <button class="b" id="bsave">Adicionar banner</button><button class="b s" id="bcancel">Limpar</button></div>
+ <div class="box"><h2>Banners (<span id="bcount">0</span>)</h2><table id="blist"></table><p class="note">O primeiro banner também aparece no Início.</p></div>
+</section></div>
+</main><div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="produtos.js"></script><script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s),esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=v=>{v=v.trim().replace(',','.');return v===''||isNaN(+v)?null:+v};
+function toast(t,err){const e=$('#toast');e.textContent=t;e.className=err?'err':'';e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3500)}
+let sb,produtos=[],banners=[],cfg={},ed='',edInv=false,edB=null,imgAtual='';
+if(!SUPA.url||!SUPA.key)$('#setup').classList.remove('hid');
+else{sb=supabase.createClient(SUPA.url,SUPA.key);sb.auth.getSession().then(({data})=>data.session?start():$('#login').classList.remove('hid'))}
+$('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('#em').value.trim(),password:$('#pw').value});if(error)$('#lmsg').textContent='Email ou palavra-passe incorretos.';else start()};
+$('#out').onclick=async()=>{await sb.auth.signOut();location.reload()};
+async function start(){$('#login').classList.add('hid');$('#app').classList.remove('hid');$('#out').classList.remove('hid');await load()}
+async function load(){const[a,b,c]=await Promise.all([sb.from('produtos').select('*').order('atualizado',{ascending:false}),sb.from('banners').select('*').order('ordem').order('id'),sb.from('config').select('*').eq('id',1).maybeSingle()]);
+ if(a.error||b.error)return toast('Erro a carregar dados: '+(a.error||b.error).message,1);produtos=a.data||[];banners=b.data||[];cfg=c.data||{ativa:false,titulo:'Promoções',intro:''};render()}
+function compress(file,w,q){return new Promise((ok,ko)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const k=Math.min(1,w/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(ok,'image/jpeg',q)};im.onerror=ko;im.src=u})}
+async function upload(file,w,q){const blob=await compress(file,w,q),name=Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
+ const{error}=await sb.storage.from('imagens').upload(name,blob,{contentType:'image/jpeg',cacheControl:'31536000'});if(error)throw error;return sb.storage.from('imagens').getPublicUrl(name).data.publicUrl}
+$('#cat').innerHTML=CATS.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('');
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{['p','b'].forEach(t=>$('#'+t).classList.toggle('hid',t!==b.dataset.t));document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b))});
+function clearForm(){ed='';edInv=false;imgAtual='';$('#ref').disabled=false;['ref','nome','preco','ant','desc'].forEach(i=>$('#'+i).value='');$('#img').value='';['dest','novo','promo'].forEach(i=>$('#'+i).checked=false);$('#ptitle').textContent='Novo produto'}
+function fill(p){$('#ref').value=p.ref;$('#nome').value=p.n||'';$('#cat').value=p.c||CATS[0][0];$('#preco').value=p.p??'';$('#ant').value=p.ant??'';$('#desc').value=p.d||'';imgAtual=p.img||'';$('#img').value='';$('#dest').checked=!!p.dest;$('#novo').checked=!!p.novo;$('#promo').checked=!!p.promo}
+function edit(ref,inv){const o=produtos.find(x=>x.ref===ref),b=P.find(x=>x.r===ref);fill(inv?{ref,n:b.n,c:b.c,...Object.fromEntries(Object.entries(o||{}).filter(([k,v])=>v!==null))}:o);ed=ref;edInv=inv;$('#ref').disabled=true;$('#ptitle').textContent=inv?'Editar produto do inventário':'Editar produto';document.querySelector('[data-t=p]').click();scrollTo(0,0)}
+$('#pcancel').onclick=clearForm;
+$('#psave').onclick=async()=>{const ref=$('#ref').value.trim(),n=$('#nome').value.trim();
+ if(!ref||!n)return toast('Preencha a referência e o nome.',1);
+ if(!ed&&(produtos.some(x=>x.ref===ref)||P.some(x=>x.r===ref)))return toast('Essa referência já existe. Para alterar produtos do inventário use a pesquisa mais abaixo.',1);
+ try{const f=$('#img').files[0];const img=f?await upload(f,800,.82):imgAtual;
+  const row={ref,n,c:$('#cat').value,p:num($('#preco').value),ant:num($('#ant').value),d:$('#desc').value.trim()||null,img:img||null,dest:$('#dest').checked,novo:$('#novo').checked,promo:$('#promo').checked,custom:ed?!edInv:true,atualizado:new Date().toISOString()};
+  const{error}=await sb.from('produtos').upsert(row);if(error)throw error;clearForm();await load();toast('Guardado. Já está no site.')}catch(e){toast('Erro: '+(e.message||e),1)}};
+async function del(ref,msg){if(!confirm(msg))return;const{error}=await sb.from('produtos').delete().eq('ref',ref);if(error)return toast(error.message,1);if(ed===ref)clearForm();await load();toast('Feito.')}
+const flags=p=>[p.dest&&'Destaque',p.novo&&'Novo',p.promo&&'Promoção'].filter(Boolean).join(', ');
+function render(){
+ const cu=produtos.filter(x=>x.custom),al=produtos.filter(x=>!x.custom);
+ $('#pcount').textContent=cu.length;$('#acount').textContent=al.length;
+ $('#plist').innerHTML=cu.map(p=>`<tr><td>${p.img?`<img src="${esc(p.img)}">`:''}</td><td><b>${esc(p.n)}</b><br><small>${esc(p.ref)}</small></td><td>${p.p!=null?(+p.p).toFixed(2)+' €':'—'}</td><td>${flags(p)}</td><td><button class="b s" data-e="${esc(p.ref)}">Editar</button><button class="b r" data-d="${esc(p.ref)}">Apagar</button></td></tr>`).join('')||'<tr><td>Ainda não adicionou produtos.</td></tr>';
+ $('#alist').innerHTML=al.map(p=>{const o=P.find(x=>x.r===p.ref)||{n:p.ref};return `<tr><td><b>${esc(p.n||o.n)}</b><br><small>${esc(p.ref)}</small></td><td>${p.p!=null?(+p.p).toFixed(2)+' €':'—'}</td><td>${flags(p)}</td><td><button class="b s" data-ei="${esc(p.ref)}">Editar</button><button class="b r" data-r="${esc(p.ref)}">Repor original</button></td></tr>`}).join('');
+ document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>edit(b.dataset.e,false));document.querySelectorAll('[data-ei]').forEach(b=>b.onclick=()=>edit(b.dataset.ei,true));
+ document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>del(b.dataset.d,'Apagar este produto?'));document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>del(b.dataset.r,'Repor os dados originais deste produto?'));
+ renderInv();
+ $('#aativa').checked=!!cfg.ativa;$('#atit').value=cfg.titulo||'';$('#aint').value=cfg.intro||'';$('#bcount').textContent=banners.length;
+ $('#blist').innerHTML=banners.map((b,i)=>`<tr><td><img src="${esc(b.img)}" style="width:120px"></td><td><b>${esc(b.titulo)}</b><br><small>${esc(b.texto)}</small></td><td><button class="b s" data-be="${i}">Editar</button><button class="b s" data-u="${i}">↑</button><button class="b r" data-x="${i}">Apagar</button></td></tr>`).join('');
+ document.querySelectorAll('[data-be]').forEach(b=>b.onclick=()=>{const x=banners[+b.dataset.be];edB=x.id;$('#btit').value=x.titulo||'';$('#btxt').value=x.texto||'';$('#blink').value=x.link||'';$('#bimg').value='';$('#btitle').textContent='Editar banner (imagem opcional)';$('#bsave').textContent='Guardar banner';scrollTo(0,0)});
+ document.querySelectorAll('[data-u]').forEach(b=>b.onclick=async()=>{const i=+b.dataset.u;if(!i)return;[banners[i-1],banners[i]]=[banners[i],banners[i-1]];await Promise.all(banners.map((x,k)=>sb.from('banners').update({ordem:k}).eq('id',x.id)));await load()});
+ document.querySelectorAll('[data-x]').forEach(b=>b.onclick=async()=>{if(!confirm('Apagar este banner?'))return;await sb.from('banners').delete().eq('id',banners[+b.dataset.x].id);await load();toast('Banner apagado.')})}
+function renderInv(){const q=$('#isearch').value.toLowerCase().trim();
+ $('#ilist').innerHTML=q.length<2?'':P.filter(x=>(x.n+' '+x.r).toLowerCase().includes(q)).slice(0,15).map(x=>`<tr><td><b>${esc(x.n)}</b><br><small>${esc(x.r)}</small></td><td><button class="b s" data-ii="${esc(x.r)}">Editar / promover</button></td></tr>`).join('');
+ document.querySelectorAll('[data-ii]').forEach(b=>b.onclick=()=>edit(b.dataset.ii,true))}
+$('#isearch').oninput=renderInv;
+$('#asave').onclick=async()=>{const{error}=await sb.from('config').upsert({id:1,ativa:$('#aativa').checked,titulo:$('#atit').value.trim()||'Promoções',intro:$('#aint').value.trim()});error?toast(error.message,1):(await load(),toast('Aba guardada.'))};
+function clearB(){edB=null;['bimg','btit','btxt','blink'].forEach(i=>$('#'+i).value='');$('#btitle').textContent='Novo banner';$('#bsave').textContent='Adicionar banner'}
+$('#bcancel').onclick=clearB;
+$('#bsave').onclick=async()=>{const f=$('#bimg').files[0];if(!f&&edB===null)return toast('Escolha uma imagem.',1);
+ try{const r={titulo:$('#btit').value.trim()||null,texto:$('#btxt').value.trim()||null,link:$('#blink').value.trim()||null};if(f)r.img=await upload(f,1600,.8);
+  const q=edB===null?sb.from('banners').insert({...r,ordem:banners.length}):sb.from('banners').update(r).eq('id',edB);const{error}=await q;if(error)throw error;clearB();await load();toast('Banner guardado. Já está no site.')}catch(e){toast('Erro: '+(e.message||e),1)}};
+</script></body></html>
